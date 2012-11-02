@@ -37,6 +37,8 @@ set :no_disable,        true
 set :local_database,    nil
 set :backup_database,   true
 set :push_dump_enabled, false
+set :make_install_profile,      false
+set :make_file,         ''
 
 ssh_options[:forward_agent] = true
 #ssh_options[:verbose] = :debug #FIXME
@@ -145,6 +147,9 @@ namespace :deploy do
 
   desc "[internal] Rebuild files and settings symlinks"
   task :finalize_update, :except => { :no_release => true } do
+    if make_install_profile
+      run "cd #{current_release} && drush make #{make_file} #{drupal_path}"
+    end
     # Specifies an on_rollback hook for the currently executing task. If this
     # or any subsequent task then fails, and a transaction is active, this
     # hook will be executed.
@@ -258,7 +263,7 @@ namespace :deploy do
     end
 
   end
-  
+
   namespace :web do
     desc "Makes the application web-accessible again."
     task :enable do
