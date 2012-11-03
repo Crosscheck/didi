@@ -502,8 +502,30 @@ namespace :manage do
       run "rm  #{File.join(dbbackups_path, "#{sql_file}")}"
     end
   end
-end
 
+  desc 'Download files and extract locally'
+  task :pull_files do
+    abort("ERROR: multisite not supported") if is_multisite
+
+    set(:runit, Capistrano::CLI.ui.ask("Do you want to download the files? type 'yes' to continue: "))
+    if runit == 'yes'
+      # pack and remote file
+      file = "#{current_path}/#{releases.last}.tar.gz"
+      run "cd #{current_path}/#{drupal_path}/sites/default && tar -zcvf #{file} files/*"
+      # copy to local
+      system "if [ ! -d build ]; then mkdir build; fi" # create build folder locally if needed
+      download "#{file}", "build/", :once => true, :via => :scp
+      run "rm #{file}"
+      set(:extract, Capistrano::CLI.ui.ask("Do you want to extract #{File.basename(file)}? type 'yes' to continue: "))
+      if extract == 'yes'
+        # extract the files
+        set(:where, Capistrano::CLI.ui.ask("Where? (default: build): "))
+        dest = where == '' ? "build" : "#{where}"
+        system "tar -zxvf build/#{File.basename(file)} -C #{dest}"
+      end
+    end
+  end
+end
 
 # =========================
 # Helper methods
