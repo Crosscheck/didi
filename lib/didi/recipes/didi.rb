@@ -509,8 +509,9 @@ namespace :manage do
 
     set(:runit, Capistrano::CLI.ui.ask("Do you want to download the files? type 'yes' to continue: "))
     if runit == 'yes'
+      run "if [ ! -d #{deploy_to}/tmp ]; then mkdir #{deploy_to}/tmp; fi" # create tmp folder if needed
       # pack and remote file
-      file = "#{current_path}/#{releases.last}.tar.gz"
+      file = "#{deploy_to}/tmp/#{releases.last}.tar.gz"
       run "cd #{current_path}/#{drupal_path}/sites/default && tar -zcvf #{file} files/*"
       # copy to local
       system "if [ ! -d build ]; then mkdir build; fi" # create build folder locally if needed
