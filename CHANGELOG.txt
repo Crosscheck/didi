@@ -1,3 +1,7 @@
+## 0.4.5 / 3 July 2013
+
+* added support for private files directory, using the user_private_files flag.
+
 ## 0.4.4 / 19 Oct 2012
 
 * fixed issue where wrong previous releases folder was used during cleanup_shared_symlinks
@@ -33,8 +37,8 @@
 
 ## 0.3.2 / 23 Mar 2012
 
-* added config option: enable_robots, default to false 
-* added config option: drush_path, on remote server 
+* added config option: enable_robots, default to false
+* added config option: drush_path, on remote server
 * added default php settings in settings.php file
 * put site in maintenance mode during deploy
 
