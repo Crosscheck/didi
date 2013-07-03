@@ -40,6 +40,7 @@ set :backup_database,   true
 set :push_dump_enabled, false
 set :make_install_profile,      false
 set :make_file,         ''
+set :use_private_files, false
 
 ssh_options[:forward_agent] = true
 #ssh_options[:verbose] = :debug #FIXME
@@ -51,13 +52,15 @@ ssh_options[:forward_agent] = true
 # =========================================================================
 _cset :settings,          'settings.php'
 _cset :files,             'files'
+_cset :private_files,     'private'
 _cset :dbbackups,         'db_backups'
 _cset :drush_path,        ''
 
-_cset(:shared_settings) { domain.to_a.map { |d| File.join(shared_path, d, settings) } }
-_cset(:shared_files)    { domain.to_a.map { |d| File.join(shared_path, d, files) } }
-_cset(:dbbackups_path)  { domain.to_a.map { |d| File.join(deploy_to, dbbackups, d) } }
-_cset(:drush)           { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
+_cset(:shared_settings)         { domain.to_a.map { |d| File.join(shared_path, d, settings) } }
+_cset(:shared_files)            { domain.to_a.map { |d| File.join(shared_path, d, files) } }
+_cset(:shared_private_files)    { domain.to_a.map { |d| File.join(shared_path, d, private_files) } }
+_cset(:dbbackups_path)          { domain.to_a.map { |d| File.join(deploy_to, dbbackups, d) } }
+_cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
 
 # these variables are still in rails-less deploy gem
 # but have been updated in the latest capistrano gem
@@ -74,11 +77,13 @@ set(:previous_revision) { capture("cat #{previous_release}/REVISION", :except =>
 
 _cset(:release_settings)              { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
 _cset(:release_files)                 { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
+_cset(:release_private_files)         { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
 _cset(:release_domain)                { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d) } }
 
-_cset(:previous_release_settings)     { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
-_cset(:previous_release_files)        { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
-_cset(:previous_release_domain)       { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
+_cset(:previous_release_settings)             { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
+_cset(:previous_release_files)                { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
+_cset(:previous_release_private_files)        { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, private_files) } : nil }
+_cset(:previous_release_domain)               { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
 
 _cset(:is_multisite)                  { domain.to_a.size > 1 }
 
@@ -138,6 +143,13 @@ namespace :deploy do
       mkdir -p #{dirs.join(' ')} && #{try_sudo} chown #{user}:#{srv_usr} #{shared_files.join(' ')} && #{try_sudo} chmod g+w #{shared_files.join(' ')}
     CMD
 
+    # Generate private files when enabled.
+    if use_private_files
+      run <<-CMD
+        mkdir -p #{shared_private_files} && #{try_sudo} chown #{user}:#{srv_usr} #{shared_private_files.join(' ')} && #{try_sudo} chmod g+w #{shared_private_files.join(' ')}
+      CMD
+    end
+
     #create drupal config file
     domain.each_with_index do |d, i|
       configuration = drupal_settings(drupal_version, d)
@@ -158,6 +170,9 @@ namespace :deploy do
       if previous_release
         #FIXME: won't work on mulitsite config
         run "ln -nfs #{shared_files} #{previous_release_files} && ln -nfs #{shared_settings} #{previous_release_settings}"
+        if use_private_files
+          run "ln -nfs #{shared_private_files} #{previous_release_private_files}"
+        end
       else
         logger.important "no previous release to rollback to, rollback of drupal shared data skipped."
       end
@@ -173,6 +188,14 @@ namespace :deploy do
         ln -nfs #{shared_settings[i]} #{release_settings[i]}
         CMD
     end
+
+    if use_private_files
+      shared_private_files.each_with_index do |sf, i|
+        run <<-CMD
+          ln -nfs #{sf} #{release_private_files[i]}
+          CMD
+      end
+    end
   end
 
   desc "[internal] cleanup old symlinks, must run after deploy:symlink"
@@ -184,6 +207,11 @@ namespace :deploy do
           rm -f #{previous_release_settings[i]} &&
           rm -f #{previous_release_files[i]}
         CMD
+        if use_private_files
+          run <<-CMD
+            rm -f #{previous_release_private_files[i]}
+          CMD
+        end
       end
     end
   end
@@ -240,6 +268,14 @@ namespace :deploy do
             ln -nfs #{sf} #{previous_release_files[i]} &&
             ln -nfs #{shared_settings[i]} #{previous_release_settings[i]}
           CMD
+        end
+
+        if use_private_files
+          shared_private_files.each_with_index do |sf, i|
+            run <<-CMD
+              ln -nfs #{sf} #{previous_release_private_files[i]}
+            CMD
+          end
         end
       else
         abort "could not rollback the code because there is no prior release"
