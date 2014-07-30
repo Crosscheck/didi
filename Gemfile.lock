@@ -32,8 +32,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1)
-  capistrano (~> 2.12)
-  jeweler (~> 1.6)
-  railsless-deploy (~> 1.0)
-  shoulda (~> 3.0)
+  bundler (>= 1)
+  capistrano (>= 2.12)
+  jeweler (>= 1.6)
+  railsless-deploy (>= 1.0)
+  shoulda (>= 3.0)
