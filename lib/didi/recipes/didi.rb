@@ -93,7 +93,12 @@ _cset(:is_multisite)                  { domain.to_a.size > 1 }
 depend :local,  :command, "drush"
 depend :remote, :command, "#{drush_path}drush"
 
-
+if !domain.kind_of?(Array)
+    domain = [domain]
+end
+if !baseline.kind_of?(Array)
+    baseline = [baseline]
+end
 # =========================================================================
 # Overwrites to the DEPLOY tasks in the capistrano library.
 # =========================================================================
