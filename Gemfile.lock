@@ -34,6 +34,6 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1)
   capistrano (~> 2.12)
-  jeweler (~> 1.6.4)
+  jeweler (~> 1.6)
   railsless-deploy (~> 1.0)
-  shoulda
+  shoulda (~> 3.0)
