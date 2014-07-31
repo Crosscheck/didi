@@ -55,7 +55,7 @@ _cset :files,             'files'
 _cset :private_files,     'private'
 _cset :dbbackups,         'db_backups'
 _cset :drush_path,        ''
-    
+
 #_cset(:shared_settings)         { domain.to_a.map { |d| File.join(shared_path, d, settings) } }
 #_cset(:shared_files)            { domain.to_a.map { |d| File.join(shared_path, d, files) } }
 #_cset(:shared_private_files)    { domain.to_a.map { |d| File.join(shared_path, d, private_files) } }
@@ -68,7 +68,7 @@ _cset :drush_path,        ''
 #    puts :baseline.to_s
 #    baseline = :baseline.to_s.split()
 #end
-    
+
 #if :domain.to_s.kind_of?(String)
 #    #put domain
 #    domain = :domain.to_s.split()
@@ -85,8 +85,8 @@ _cset(:shared_files)            { domain.map { |d| File.join(shared_path, d, fil
 _cset(:shared_private_files)    { domain.map { |d| File.join(shared_path, d, private_files) } }
 _cset(:dbbackups_path)          { domain.map { |d| File.join(deploy_to, dbbackups, d) } }
 _cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
-    
-    
+
+
 # these variables are still in rails-less deploy gem
 # but have been updated in the latest capistrano gem
 # we use set to override them instead of _cset
@@ -123,24 +123,22 @@ _cset(:previous_release_private_files)        { releases.length > 1 ? domain.map
 _cset(:previous_release_domain)               { releases.length > 1 ? domain.map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
 
 _cset(:is_multisite)                  { domain.split(' ').size > 1 }
-    
-    
+
+
 # =========================================================================
 # Extra dependency checks
 # =========================================================================
 depend :local,  :command, "drush"
 depend :remote, :command, "#{drush_path}drush"
 
-puts fetch(:domain)
-puts fetch(:adminpass)
-abort "kak"
+
 
 # =========================================================================
 # Overwrites to the DEPLOY tasks in the capistrano library.
 # =========================================================================
 
 namespace :deploy do
- 
+
 
   desc <<-DESC
     Deploys your Drupal site, runs drush:update. It supposes that the Setup task was already executed.
@@ -179,7 +177,7 @@ namespace :deploy do
     #Create shared directories
     # FIXME: chown / chmod require user to be member of
     dirs = [deploy_to, releases_path, shared_path, dbbackups_path, shared_files]
-    dirs += domain.map { |d| File.join(shared_path, d) }
+    dirs += convert_domain().map { |d| File.join(shared_path, d) }
 
     run <<-CMD
       mkdir -p #{dirs.join(' ')} && #{try_sudo} chown #{user}:#{srv_usr} #{shared_files.join(' ')} && #{try_sudo} chmod g+w #{shared_files.join(' ')}
@@ -193,7 +191,7 @@ namespace :deploy do
     end
 
     #create drupal config file
-    domain.each_with_index do |d, i|
+    convert_domain().each_with_index do |d, i|
       configuration = drupal_settings(drupal_version, d)
       put configuration, shared_settings[i]
     end
@@ -363,35 +361,35 @@ namespace :drush do
 
   desc "Clear the Drupal site cache"
   task :cc do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " cache-clear all"
     end
   end
 
   desc "Show features diff status"
   task :fd do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " features-diff"
     end
   end
 
   desc "Revert all enabled feature modules on your site"
   task :fra do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " features-revert-all -y"
     end
   end
 
   desc "Force revert all enabled feature modules on your site"
   task :fraforce do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " features-revert-all --force -y"
     end
   end
 
   desc "Install Drupal along with modules/themes/configuration using the specified install profile"
   task :si do
-    domain.each do |d|
+    convert_domain().each do |d|
       dburl = "#{db_type}://#{db_username}:#{db_password}@#{db_host}/#{db_name.gsub("%domain", d)}"
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush site-install #{profile} --db-url=#{dburl} --sites-subdir=#{d} --account-name=admin --account-pass=#{adminpass}  --account-mail=#{sitemail} --site-mail='#{sitemail}' --site-name='#{site.gsub("%domain", d)}' -y"
     end
@@ -400,9 +398,9 @@ namespace :drush do
 
   desc "[internal] Enable the baseline feature"
   task :bl do
-    domain.each do |d|
+    convert_domain().each do |d|
       #baseline.to_a.each do |bl_item|
-      baseline.each do |bl_item|
+      convert_baseline().each do |bl_item|
         run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " pm-enable #{bl_item.gsub("%domain", d)} -y"
       end
     end
@@ -419,7 +417,7 @@ namespace :drush do
     if drupal_version == 6
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush vset --always-set site_offline 0"
     else
-      domain.each do |d|
+      convert_domain().each do |d|
         run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " vset --always-set maintenance_mode 0"
       end
     end
@@ -430,7 +428,7 @@ namespace :drush do
     if drupal_version == 6
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush vset --always-set site_offline 1"
     else
-      domain.each do |d|
+      convert_domain().each do |d|
         run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " vset --always-set maintenance_mode 1"
       end
     end
@@ -438,7 +436,7 @@ namespace :drush do
 
   desc "Apply any database updates required (as with running update.php)"
   task :updb do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " updatedb -y"
     end
   end
@@ -532,7 +530,7 @@ namespace :manage do
   task :dbdump_previous do
     #Backup the previous release's database
     if previous_release && backup_database
-      domain.each_with_index do |d,i|
+      convert_domain().each_with_index do |d,i|
         run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " sql-dump > #{ File.join(dbbackups_path[i], "#{releases[-2]}.sql") }"
       end
     end
@@ -613,6 +611,27 @@ end
 # =========================
 
 # Builds initial contents of the Drupal website's settings file
+
+def convert_domain()
+    temp_dom = fetch(:domain)
+    if temp_dom.kind_of?(String)
+        temp_arr = [temp_dom]
+        return temp_arr
+    end
+
+    return temp_dom
+end
+
+def convert_baseline()
+    temp_bl = fetch(:baseline)
+    if temp_bl.kind_of?(String)
+        temp_arr = [temp_bl]
+        return temp_arr
+    end
+
+    return temp_bl
+end
+
 def drupal_settings(version, domain)
   db_domain_name = db_name.gsub("%domain", domain)
   if version.to_s == '6'
