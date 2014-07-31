@@ -62,11 +62,11 @@ _cset :drush_path,        ''
 #_cset(:dbbackups_path)          { domain.to_a.map { |d| File.join(deploy_to, dbbackups, d) } }
 #_cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
 if :baseline.kind_of?(String)
-    baseline = [:baseline]
+    baseline = baseline.split()
 end
     
 if :domain.kind_of?(String)
-    domain = [:domain]
+    domain = domain.split()
 end
     
 _cset(:shared_settings)         { domain.map { |d| File.join(shared_path, d, settings) } }
