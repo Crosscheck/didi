@@ -63,7 +63,7 @@ _cset :drush_path,        ''
 #_cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
 
 if :baseline.to_s.kind_of?(String)
-    puts :baseline.to_proc
+    puts :baseline[]
     #puts :baseline.to_s.split()
     baseline = :baseline.to_s.split()
 end
