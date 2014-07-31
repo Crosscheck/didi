@@ -56,12 +56,19 @@ _cset :private_files,     'private'
 _cset :dbbackups,         'db_backups'
 _cset :drush_path,        ''
 
-_cset(:shared_settings)         { domain.to_a.map { |d| File.join(shared_path, d, settings) } }
-_cset(:shared_files)            { domain.to_a.map { |d| File.join(shared_path, d, files) } }
-_cset(:shared_private_files)    { domain.to_a.map { |d| File.join(shared_path, d, private_files) } }
-_cset(:dbbackups_path)          { domain.to_a.map { |d| File.join(deploy_to, dbbackups, d) } }
-_cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
+#_cset(:shared_settings)         { domain.to_a.map { |d| File.join(shared_path, d, settings) } }
+#_cset(:shared_files)            { domain.to_a.map { |d| File.join(shared_path, d, files) } }
+#_cset(:shared_private_files)    { domain.to_a.map { |d| File.join(shared_path, d, private_files) } }
+#_cset(:dbbackups_path)          { domain.to_a.map { |d| File.join(deploy_to, dbbackups, d) } }
+#_cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
 
+_cset(:shared_settings)         { domain.split(' ').map { |d| File.join(shared_path, d, settings) } }
+_cset(:shared_files)            { domain.split(' ').map { |d| File.join(shared_path, d, files) } }
+_cset(:shared_private_files)    { domain.split(' ').map { |d| File.join(shared_path, d, private_files) } }
+_cset(:dbbackups_path)          { domain.split(' ').map { |d| File.join(deploy_to, dbbackups, d) } }
+_cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
+    
+    
 # these variables are still in rails-less deploy gem
 # but have been updated in the latest capistrano gem
 # we use set to override them instead of _cset
@@ -75,25 +82,43 @@ set(:latest_revision)   { capture("cat #{current_release}/REVISION",  :except =>
 set(:previous_revision) { capture("cat #{previous_release}/REVISION", :except => { :no_release => true }).chomp if previous_release }
 # end fix
 
-_cset(:release_settings)              { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
-_cset(:release_files)                 { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
-_cset(:release_private_files)         { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
-_cset(:release_domain)                { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d) } }
+#_cset(:release_settings)              { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
+#_cset(:release_files)                 { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
+#_cset(:release_private_files)         { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
+#_cset(:release_domain)                { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d) } }
 
-_cset(:previous_release_settings)             { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
-_cset(:previous_release_files)                { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
-_cset(:previous_release_private_files)        { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, private_files) } : nil }
-_cset(:previous_release_domain)               { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
+#_cset(:previous_release_settings)             { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
+#_cset(:previous_release_files)                { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
+#_cset(:previous_release_private_files)        { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, private_files) } : nil }
+#_cset(:previous_release_domain)               { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
 
-_cset(:is_multisite)                  { domain.to_a.size > 1 }
+#_cset(:is_multisite)                  { domain.to_a.size > 1 }
 
+_cset(:release_settings)              { domain.split(' ').map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
+_cset(:release_files)                 { domain.split(' ').map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
+_cset(:release_private_files)         { domain.split(' ').map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
+_cset(:release_domain)                { domain.split(' ').map { |d| File.join(release_path, drupal_path, 'sites', d) } }
+
+_cset(:previous_release_settings)             { releases.length > 1 ? domain.split(' ').map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
+_cset(:previous_release_files)                { releases.length > 1 ? domain.split(' ').map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
+_cset(:previous_release_private_files)        { releases.length > 1 ? domain.split(' ').map { |d| File.join(previous_release, drupal_path, 'sites', d, private_files) } : nil }
+_cset(:previous_release_domain)               { releases.length > 1 ? domain.split(' ').map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
+
+_cset(:is_multisite)                  { domain.split(' ').size > 1 }
+    
+    
 # =========================================================================
 # Extra dependency checks
 # =========================================================================
 depend :local,  :command, "drush"
 depend :remote, :command, "#{drush_path}drush"
 
-
+#if !domain.empty? && !domain.kind_of?(Array)
+#    domain = [domain]
+#end
+#if !baseline.empty? && !baseline.kind_of?(Array)
+#    baseline = [baseline]
+#end
 # =========================================================================
 # Overwrites to the DEPLOY tasks in the capistrano library.
 # =========================================================================
@@ -359,7 +384,8 @@ namespace :drush do
   desc "[internal] Enable the baseline feature"
   task :bl do
     domain.each do |d|
-      baseline.to_a.each do |bl_item|
+      #baseline.to_a.each do |bl_item|
+      baseline.split(' ').each do |bl_item|
         run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " pm-enable #{bl_item.gsub("%domain", d)} -y"
       end
     end
