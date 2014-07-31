@@ -115,7 +115,7 @@ set(:previous_revision) { capture("cat #{previous_release}/REVISION", :except =>
 _cset(:release_settings)              { domain.map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
 _cset(:release_files)                 { domain.map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
 _cset(:release_private_files)         { domain.map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
-_cset(:release_domain)                { domain.map { |d| File.join(release_path, drupal_path, 'sites', d) } }
+_cset(:release_domain)                { convert_domain().map { |d| File.join(release_path, drupal_path, 'sites', d) } }
 
 _cset(:previous_release_settings)             { releases.length > 1 ? domain.map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
 _cset(:previous_release_files)                { releases.length > 1 ? domain.map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
