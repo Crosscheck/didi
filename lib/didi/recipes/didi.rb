@@ -61,14 +61,14 @@ _cset :drush_path,        ''
 #_cset(:shared_private_files)    { domain.to_a.map { |d| File.join(shared_path, d, private_files) } }
 #_cset(:dbbackups_path)          { domain.to_a.map { |d| File.join(deploy_to, dbbackups, d) } }
 #_cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
-puts :domain
-puts :domain.class
+puts domain
+puts domain.class
 abort "end here"
-if :baseline.kind_of?(String)
+if baseline.kind_of?(String)
     baseline = baseline.split()
 end
     
-if :domain.kind_of?(String)
+if domain.kind_of?(String)
     domain = domain.split()
     puts domain
 end
