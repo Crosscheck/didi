@@ -67,6 +67,7 @@ end
     
 if :domain.kind_of?(String)
     domain = domain.split()
+    puts domain
 end
     
 _cset(:shared_settings)         { domain.map { |d| File.join(shared_path, d, settings) } }
