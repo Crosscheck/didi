@@ -131,10 +131,8 @@ _cset(:is_multisite)                  { domain.split(' ').size > 1 }
 depend :local,  :command, "drush"
 depend :remote, :command, "#{drush_path}drush"
 
-    test = :baseline
-    test2 = :domain
-    puts test
-    puts test2
+puts fetch(:baseline)
+abort "kak"
 
 # =========================================================================
 # Overwrites to the DEPLOY tasks in the capistrano library.
