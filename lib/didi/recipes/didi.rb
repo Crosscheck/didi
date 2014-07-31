@@ -137,9 +137,7 @@ depend :remote, :command, "#{drush_path}drush"
 # =========================================================================
 
 namespace :deploy do
-    puts baseline
-    puts domain
-    abort "oei"
+ 
 
   desc <<-DESC
     Deploys your Drupal site, runs drush:update. It supposes that the Setup task was already executed.
@@ -444,7 +442,7 @@ namespace :drush do
 
   desc "Update via drush, runs fra, updb and cc"
   task :update do
-
+    puts "oei"
     dissite unless no_disable
     updb # database updates (also handles modules that have been moved around)
     cc # fix for user_permissions constraint (install new modules)
