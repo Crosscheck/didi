@@ -132,6 +132,7 @@ depend :local,  :command, "drush"
 depend :remote, :command, "#{drush_path}drush"
 
 puts fetch(:domain)
+puts fetch(:adminpass)
 abort "kak"
 
 # =========================================================================
