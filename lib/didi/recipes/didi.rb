@@ -69,8 +69,10 @@ end
 if :domain.to_s.kind_of?(String)
     domain = :domain.to_s.split()
 end
-puts "The domain after conversion:" + domain
-puts "The baseline after conversion:" + baseline
+puts "The domain after conversion:"
+puts domain
+puts "The baseline after conversion:"
+puts baseline
 puts domain.class
 puts baseline.class
 abort "end here"
