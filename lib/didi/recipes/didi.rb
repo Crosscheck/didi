@@ -131,6 +131,10 @@ _cset(:is_multisite)                  { domain.split(' ').size > 1 }
 depend :local,  :command, "drush"
 depend :remote, :command, "#{drush_path}drush"
 
+    test = :baseline
+    test2 = :domain
+    puts test
+    puts test2
 
 # =========================================================================
 # Overwrites to the DEPLOY tasks in the capistrano library.
@@ -442,7 +446,6 @@ namespace :drush do
 
   desc "Update via drush, runs fra, updb and cc"
   task :update do
-    puts "oei"
     dissite unless no_disable
     updb # database updates (also handles modules that have been moved around)
     cc # fix for user_permissions constraint (install new modules)
