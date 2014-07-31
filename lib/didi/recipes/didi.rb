@@ -69,13 +69,13 @@ end
 if :domain.to_s.kind_of?(String)
     domain = :domain.to_s.split()
 end
-#puts "The domain after conversion:"
-#puts domain
-#puts "The baseline after conversion:"
-#puts baseline
-#puts domain.class
-#puts baseline.class
-#abort "end here"
+puts "The domain after conversion:"
+puts domain
+puts "The baseline after conversion:"
+puts baseline
+puts domain.class
+puts baseline.class
+abort "end here"
 _cset(:shared_settings)         { domain.map { |d| File.join(shared_path, d, settings) } }
 _cset(:shared_files)            { domain.map { |d| File.join(shared_path, d, files) } }
 _cset(:shared_private_files)    { domain.map { |d| File.join(shared_path, d, private_files) } }
