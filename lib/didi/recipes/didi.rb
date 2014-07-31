@@ -63,13 +63,14 @@ _cset :drush_path,        ''
 #_cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
 #puts Object.const_get(:baseline).n
 if :baseline.to_s.kind_of?(String)
-    puts baseline
+    #puts baseline
+    puts :baseline.inspect
     puts :baseline.to_s
     baseline = :baseline.to_s.split()
 end
     
 if :domain.to_s.kind_of?(String)
-    put domain
+    #put domain
     domain = :domain.to_s.split()
 end
 puts "The domain after conversion:"
