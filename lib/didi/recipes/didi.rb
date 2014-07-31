@@ -69,17 +69,17 @@ _cset :drush_path,        ''
 #    baseline = :baseline.to_s.split()
 #end
     
-if :domain.to_s.kind_of?(String)
-    #put domain
-    domain = :domain.to_s.split()
-end
-puts "The domain after conversion:"
-puts domain
-puts "The baseline after conversion:"
-puts baseline
-puts domain.class
-puts baseline.class
-abort "end here"
+#if :domain.to_s.kind_of?(String)
+#    #put domain
+#    domain = :domain.to_s.split()
+#end
+#puts "The domain after conversion:"
+#puts domain
+##puts "The baseline after conversion:"
+#puts baseline.length
+#puts domain.class
+#puts baseline.class
+#abort "end here"
 _cset(:shared_settings)         { domain.map { |d| File.join(shared_path, d, settings) } }
 _cset(:shared_files)            { domain.map { |d| File.join(shared_path, d, files) } }
 _cset(:shared_private_files)    { domain.map { |d| File.join(shared_path, d, private_files) } }
@@ -137,6 +137,7 @@ depend :remote, :command, "#{drush_path}drush"
 # =========================================================================
 
 namespace :deploy do
+
 
   desc <<-DESC
     Deploys your Drupal site, runs drush:update. It supposes that the Setup task was already executed.
@@ -441,6 +442,9 @@ namespace :drush do
 
   desc "Update via drush, runs fra, updb and cc"
   task :update do
+    puts baseline
+    puts domain
+    abort "oei"
     dissite unless no_disable
     updb # database updates (also handles modules that have been moved around)
     cc # fix for user_permissions constraint (install new modules)
