@@ -80,10 +80,10 @@ _cset :drush_path,        ''
 #puts domain.class
 #puts baseline.class
 #abort "end here"
-_cset(:shared_settings)         { domain.map { |d| File.join(shared_path, d, settings) } }
-_cset(:shared_files)            { domain.map { |d| File.join(shared_path, d, files) } }
-_cset(:shared_private_files)    { domain.map { |d| File.join(shared_path, d, private_files) } }
-_cset(:dbbackups_path)          { domain.map { |d| File.join(deploy_to, dbbackups, d) } }
+_cset(:shared_settings)         { convert_domain().map { |d| File.join(shared_path, d, settings) } }
+_cset(:shared_files)            { convert_domain().map { |d| File.join(shared_path, d, files) } }
+_cset(:shared_private_files)    { convert_domain().map { |d| File.join(shared_path, d, private_files) } }
+_cset(:dbbackups_path)          { convert_domain().map { |d| File.join(deploy_to, dbbackups, d) } }
 _cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
 
 
@@ -112,17 +112,17 @@ set(:previous_revision) { capture("cat #{previous_release}/REVISION", :except =>
 
 #_cset(:is_multisite)                  { domain.to_a.size > 1 }
 
-_cset(:release_settings)              { domain.map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
-_cset(:release_files)                 { domain.map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
-_cset(:release_private_files)         { domain.map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
+_cset(:release_settings)              { convert_domain().map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
+_cset(:release_files)                 { convert_domain().map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
+_cset(:release_private_files)         { convert_domain().map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
 _cset(:release_domain)                { convert_domain().map { |d| File.join(release_path, drupal_path, 'sites', d) } }
 
-_cset(:previous_release_settings)             { releases.length > 1 ? domain.map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
-_cset(:previous_release_files)                { releases.length > 1 ? domain.map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
-_cset(:previous_release_private_files)        { releases.length > 1 ? domain.map { |d| File.join(previous_release, drupal_path, 'sites', d, private_files) } : nil }
-_cset(:previous_release_domain)               { releases.length > 1 ? domain.map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
+_cset(:previous_release_settings)             { releases.length > 1 ? convert_domain().map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
+_cset(:previous_release_files)                { releases.length > 1 ? convert_domain().map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
+_cset(:previous_release_private_files)        { releases.length > 1 ? convert_domain().map { |d| File.join(previous_release, drupal_path, 'sites', d, private_files) } : nil }
+_cset(:previous_release_domain)               { releases.length > 1 ? convert_domain().map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
 
-_cset(:is_multisite)                  { domain.split(' ').size > 1 }
+_cset(:is_multisite)                  { convert_domain().size > 1 }
 
 
 # =========================================================================
