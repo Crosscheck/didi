@@ -244,8 +244,7 @@ namespace :deploy do
       previous_release_domain.each_with_index do |prd, i|
         run "if [ -d #{prd} ]; then chmod 777 #{prd}; fi" # if drupal changed the permissions of the folder
         run <<-CMD
-          rm -f #{previous_release_settings[i]} &&
-          rm -rf #{previous_release_files[i]}
+          rm -f #{previous_release_settings[i]} && rm -rf #{previous_release_files[i]}
         CMD
         if use_private_files
           run <<-CMD
