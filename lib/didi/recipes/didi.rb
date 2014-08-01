@@ -245,11 +245,11 @@ namespace :deploy do
         run "if [ -d #{prd} ]; then chmod 777 #{prd}; fi" # if drupal changed the permissions of the folder
         run <<-CMD
           rm -f #{previous_release_settings[i]} &&
-          rm -f #{previous_release_files[i]}
+          rm -rf #{previous_release_files[i]}
         CMD
         if use_private_files
           run <<-CMD
-            rm -f #{previous_release_private_files[i]}
+            rm -rf #{previous_release_private_files[i]}
           CMD
         end
       end
