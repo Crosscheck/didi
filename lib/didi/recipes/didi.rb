@@ -209,7 +209,8 @@ namespace :deploy do
     on_rollback do
       if previous_release
         #FIXME: won't work on mulitsite config
-        run "ln -nfs #{shared_files} #{previous_release_files} && ln -nfs #{shared_settings} #{previous_release_settings}"
+        run ["ln -nfs #{shared_files} #{previous_release_files}",
+          "ln -nfs #{shared_settings} #{previous_release_settings}"].join("; ")
         if use_private_files
           run "ln -nfs #{shared_private_files} #{previous_release_private_files}"
         end
