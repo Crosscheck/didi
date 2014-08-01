@@ -225,8 +225,7 @@ namespace :deploy do
 
     shared_files.each_with_index do |sf, i|
       run <<-CMD
-        ln -nfs #{sf} #{release_files[i]} &&
-        ln -nfs #{shared_settings[i]} #{release_settings[i]}
+        ln -nfs #{sf} #{release_files[i]} && ln -nfs #{shared_settings[i]} #{release_settings[i]}
         CMD
     end
 
