@@ -56,11 +56,36 @@ _cset :private_files,     'private'
 _cset :dbbackups,         'db_backups'
 _cset :drush_path,        ''
 
-_cset(:shared_settings)         { domain.to_a.map { |d| File.join(shared_path, d, settings) } }
-_cset(:shared_files)            { domain.to_a.map { |d| File.join(shared_path, d, files) } }
-_cset(:shared_private_files)    { domain.to_a.map { |d| File.join(shared_path, d, private_files) } }
-_cset(:dbbackups_path)          { domain.to_a.map { |d| File.join(deploy_to, dbbackups, d) } }
+#_cset(:shared_settings)         { domain.to_a.map { |d| File.join(shared_path, d, settings) } }
+#_cset(:shared_files)            { domain.to_a.map { |d| File.join(shared_path, d, files) } }
+#_cset(:shared_private_files)    { domain.to_a.map { |d| File.join(shared_path, d, private_files) } }
+#_cset(:dbbackups_path)          { domain.to_a.map { |d| File.join(deploy_to, dbbackups, d) } }
+#_cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
+#puts Object.const_get(:baseline).n
+#if :baseline.to_s.kind_of?(String)
+#    #puts baseline
+#    puts :baseline.inspect
+#    puts :baseline.to_s
+#    baseline = :baseline.to_s.split()
+#end
+
+#if :domain.to_s.kind_of?(String)
+#    #put domain
+#    domain = :domain.to_s.split()
+#end
+#puts "The domain after conversion:"
+#puts domain
+##puts "The baseline after conversion:"
+#puts baseline.length
+#puts domain.class
+#puts baseline.class
+#abort "end here"
+_cset(:shared_settings)         { convert_domain().map { |d| File.join(shared_path, d, settings) } }
+_cset(:shared_files)            { convert_domain().map { |d| File.join(shared_path, d, files) } }
+_cset(:shared_private_files)    { convert_domain().map { |d| File.join(shared_path, d, private_files) } }
+_cset(:dbbackups_path)          { convert_domain().map { |d| File.join(deploy_to, dbbackups, d) } }
 _cset(:drush)                   { "drush -r #{current_path}" + (domain == 'default' ? '' : " -l #{domain}") }  # FIXME: not in use?
+
 
 # these variables are still in rails-less deploy gem
 # but have been updated in the latest capistrano gem
@@ -75,17 +100,30 @@ set(:latest_revision)   { capture("cat #{current_release}/REVISION",  :except =>
 set(:previous_revision) { capture("cat #{previous_release}/REVISION", :except => { :no_release => true }).chomp if previous_release }
 # end fix
 
-_cset(:release_settings)              { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
-_cset(:release_files)                 { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
-_cset(:release_private_files)         { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
-_cset(:release_domain)                { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d) } }
+#_cset(:release_settings)              { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
+#_cset(:release_files)                 { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
+#_cset(:release_private_files)         { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
+#_cset(:release_domain)                { domain.to_a.map { |d| File.join(release_path, drupal_path, 'sites', d) } }
 
-_cset(:previous_release_settings)             { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
-_cset(:previous_release_files)                { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
-_cset(:previous_release_private_files)        { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, private_files) } : nil }
-_cset(:previous_release_domain)               { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
+#_cset(:previous_release_settings)             { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
+#_cset(:previous_release_files)                { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
+#_cset(:previous_release_private_files)        { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d, private_files) } : nil }
+#_cset(:previous_release_domain)               { releases.length > 1 ? domain.to_a.map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
 
-_cset(:is_multisite)                  { domain.to_a.size > 1 }
+#_cset(:is_multisite)                  { domain.to_a.size > 1 }
+
+_cset(:release_settings)              { convert_domain().map { |d| File.join(release_path, drupal_path, 'sites', d, settings) } }
+_cset(:release_files)                 { convert_domain().map { |d| File.join(release_path, drupal_path, 'sites', d, files) } }
+_cset(:release_private_files)         { convert_domain().map { |d| File.join(release_path, drupal_path, 'sites', d, private_files) } }
+_cset(:release_domain)                { convert_domain().map { |d| File.join(release_path, drupal_path, 'sites', d) } }
+
+_cset(:previous_release_settings)             { releases.length > 1 ? convert_domain().map { |d| File.join(previous_release, drupal_path, 'sites', d, settings) } : nil }
+_cset(:previous_release_files)                { releases.length > 1 ? convert_domain().map { |d| File.join(previous_release, drupal_path, 'sites', d, files) } : nil }
+_cset(:previous_release_private_files)        { releases.length > 1 ? convert_domain().map { |d| File.join(previous_release, drupal_path, 'sites', d, private_files) } : nil }
+_cset(:previous_release_domain)               { releases.length > 1 ? convert_domain().map { |d| File.join(previous_release, drupal_path, 'sites', d) } : nil }
+
+_cset(:is_multisite)                  { convert_domain().size > 1 }
+
 
 # =========================================================================
 # Extra dependency checks
@@ -94,11 +132,13 @@ depend :local,  :command, "drush"
 depend :remote, :command, "#{drush_path}drush"
 
 
+
 # =========================================================================
 # Overwrites to the DEPLOY tasks in the capistrano library.
 # =========================================================================
 
 namespace :deploy do
+
 
   desc <<-DESC
     Deploys your Drupal site, runs drush:update. It supposes that the Setup task was already executed.
@@ -137,7 +177,7 @@ namespace :deploy do
     #Create shared directories
     # FIXME: chown / chmod require user to be member of
     dirs = [deploy_to, releases_path, shared_path, dbbackups_path, shared_files]
-    dirs += domain.map { |d| File.join(shared_path, d) }
+    dirs += convert_domain().map { |d| File.join(shared_path, d) }
 
     run <<-CMD
       mkdir -p #{dirs.join(' ')} && #{try_sudo} chown #{user}:#{srv_usr} #{shared_files.join(' ')} && #{try_sudo} chmod g+w #{shared_files.join(' ')}
@@ -151,7 +191,7 @@ namespace :deploy do
     end
 
     #create drupal config file
-    domain.each_with_index do |d, i|
+    convert_domain().each_with_index do |d, i|
       configuration = drupal_settings(drupal_version, d)
       put configuration, shared_settings[i]
     end
@@ -169,7 +209,8 @@ namespace :deploy do
     on_rollback do
       if previous_release
         #FIXME: won't work on mulitsite config
-        run "ln -nfs #{shared_files} #{previous_release_files} && ln -nfs #{shared_settings} #{previous_release_settings}"
+        run ["ln -nfs #{shared_files} #{previous_release_files}",
+          "ln -nfs #{shared_settings} #{previous_release_settings}"].join("; ")
         if use_private_files
           run "ln -nfs #{shared_private_files} #{previous_release_private_files}"
         end
@@ -184,8 +225,7 @@ namespace :deploy do
 
     shared_files.each_with_index do |sf, i|
       run <<-CMD
-        ln -nfs #{sf} #{release_files[i]} &&
-        ln -nfs #{shared_settings[i]} #{release_settings[i]}
+        ln -nfs #{sf} #{release_files[i]} && ln -nfs #{shared_settings[i]} #{release_settings[i]}
         CMD
     end
 
@@ -204,12 +244,11 @@ namespace :deploy do
       previous_release_domain.each_with_index do |prd, i|
         run "if [ -d #{prd} ]; then chmod 777 #{prd}; fi" # if drupal changed the permissions of the folder
         run <<-CMD
-          rm -f #{previous_release_settings[i]} &&
-          rm -f #{previous_release_files[i]}
+          rm -f #{previous_release_settings[i]} && rm -rf #{previous_release_files[i]}
         CMD
         if use_private_files
           run <<-CMD
-            rm -f #{previous_release_private_files[i]}
+            rm -rf #{previous_release_private_files[i]}
           CMD
         end
       end
@@ -321,35 +360,35 @@ namespace :drush do
 
   desc "Clear the Drupal site cache"
   task :cc do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " cache-clear all"
     end
   end
 
   desc "Show features diff status"
   task :fd do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " features-diff"
     end
   end
 
   desc "Revert all enabled feature modules on your site"
   task :fra do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " features-revert-all -y"
     end
   end
 
   desc "Force revert all enabled feature modules on your site"
   task :fraforce do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " features-revert-all --force -y"
     end
   end
 
   desc "Install Drupal along with modules/themes/configuration using the specified install profile"
   task :si do
-    domain.each do |d|
+    convert_domain().each do |d|
       dburl = "#{db_type}://#{db_username}:#{db_password}@#{db_host}/#{db_name.gsub("%domain", d)}"
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush site-install #{profile} --db-url=#{dburl} --sites-subdir=#{d} --account-name=admin --account-pass=#{adminpass}  --account-mail=#{sitemail} --site-mail='#{sitemail}' --site-name='#{site.gsub("%domain", d)}' -y"
     end
@@ -358,8 +397,9 @@ namespace :drush do
 
   desc "[internal] Enable the baseline feature"
   task :bl do
-    domain.each do |d|
-      baseline.to_a.each do |bl_item|
+    convert_domain().each do |d|
+      #baseline.to_a.each do |bl_item|
+      convert_baseline().each do |bl_item|
         run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " pm-enable #{bl_item.gsub("%domain", d)} -y"
       end
     end
@@ -376,7 +416,7 @@ namespace :drush do
     if drupal_version == 6
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush vset --always-set site_offline 0"
     else
-      domain.each do |d|
+      convert_domain().each do |d|
         run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " vset --always-set maintenance_mode 0"
       end
     end
@@ -387,7 +427,7 @@ namespace :drush do
     if drupal_version == 6
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush vset --always-set site_offline 1"
     else
-      domain.each do |d|
+      convert_domain().each do |d|
         run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " vset --always-set maintenance_mode 1"
       end
     end
@@ -395,7 +435,7 @@ namespace :drush do
 
   desc "Apply any database updates required (as with running update.php)"
   task :updb do
-    domain.each do |d|
+    convert_domain().each do |d|
       run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " updatedb -y"
     end
   end
@@ -489,7 +529,7 @@ namespace :manage do
   task :dbdump_previous do
     #Backup the previous release's database
     if previous_release && backup_database
-      domain.each_with_index do |d,i|
+      convert_domain().each_with_index do |d,i|
         run "cd #{current_path}/#{drupal_path} && #{drush_path}drush" + (d == 'default' ? '' : " -l #{d}") + " sql-dump > #{ File.join(dbbackups_path[i], "#{releases[-2]}.sql") }"
       end
     end
@@ -570,6 +610,27 @@ end
 # =========================
 
 # Builds initial contents of the Drupal website's settings file
+
+def convert_domain()
+    temp_dom = fetch(:domain)
+    if temp_dom.kind_of?(String)
+        temp_arr = [temp_dom]
+        return temp_arr
+    end
+
+    return temp_dom
+end
+
+def convert_baseline()
+    temp_bl = fetch(:baseline)
+    if temp_bl.kind_of?(String)
+        temp_arr = [temp_bl]
+        return temp_arr
+    end
+
+    return temp_bl
+end
+
 def drupal_settings(version, domain)
   db_domain_name = db_name.gsub("%domain", domain)
   if version.to_s == '6'

@@ -21,8 +21,8 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{didi is a collection of recipes for capistrano that allow drupal to be deployed, tested and used in a CI environment}
   gem.email = "koenvw@gmail.com"
   gem.authors = ["Koen Van Winckel"]
-  gem.add_dependency "capistrano", ">= 2.12.0"
-  gem.add_dependency "railsless-deploy", ">= 1.0.2"
+  #gem.add_dependency "capistrano", "~> 2.12"
+  #gem.add_dependency "railsless-deploy", "~> 1.0.2"
   gem.post_install_message = '=> "didify" and "didi" commands installed. Try them out!'
   # dependencies defined in Gemfile
 end
@@ -35,13 +35,13 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-  test.rcov_opts << '--exclude "gems/*"'
-end
+#require 'rcov/rcovtask'
+#Rcov::RcovTask.new do |test|
+#  test.libs << 'test'
+#  test.pattern = 'test/**/test_*.rb'
+#  test.verbose = true
+#  test.rcov_opts << '--exclude "gems/*"'
+#end
 
 task :default => :test
 
