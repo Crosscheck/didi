@@ -198,6 +198,9 @@ namespace :deploy do
 
   end
 
+    task :fixper do {
+    run "cd ../../#{current_release} && chmod -R 775 releases/"
+}
   desc "[internal] Rebuild files and settings symlinks"
   task :finalize_update, :except => { :no_release => true } do
     if make_install_profile
