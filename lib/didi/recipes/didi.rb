@@ -199,9 +199,9 @@ namespace :deploy do
   end
     
   desc "[internal] Fixing release permissions."
-  task :fixper do {
+  task :fixper, :except => { :no_release => false } do 
     run "cd #{current_release}/../../ && chmod -R 775 releases/"
-  }
+  end
     
   desc "[internal] Rebuild files and settings symlinks"
   task :finalize_update, :except => { :no_release => true } do
