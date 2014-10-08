@@ -197,10 +197,12 @@ namespace :deploy do
     end
 
   end
-
-    task :fixper do {
-    run "cd ../../#{current_release} && chmod -R 775 releases/"
-}
+    
+  desc "[internal] Fixing release permissions."
+  task :fixper do {
+    run "cd #{current_release}/../../ && chmod -R 775 releases/"
+  }
+    
   desc "[internal] Rebuild files and settings symlinks"
   task :finalize_update, :except => { :no_release => true } do
     if make_install_profile
@@ -240,6 +242,7 @@ namespace :deploy do
       end
     end
   end
+  after "deploy:finalize_update", "deploy:fixper"
 
   desc "[internal] cleanup old symlinks, must run after deploy:symlink"
   task :cleanup_shared_symlinks, :except => { :no_release => true } do
