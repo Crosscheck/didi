@@ -197,7 +197,12 @@ namespace :deploy do
     end
 
   end
-
+    
+  desc "[internal] Fixing release permissions."
+  task :fix_permissions, :except => { :no_release => false } do 
+    run "cd #{current_release}/../../ && chmod -R 775 releases/"
+  end
+    
   desc "[internal] Rebuild files and settings symlinks"
   task :finalize_update, :except => { :no_release => true } do
     if make_install_profile
@@ -237,6 +242,7 @@ namespace :deploy do
       end
     end
   end
+  after "deploy:finalize_update", "deploy:fix_permissions"
 
   desc "[internal] cleanup old symlinks, must run after deploy:symlink"
   task :cleanup_shared_symlinks, :except => { :no_release => true } do
