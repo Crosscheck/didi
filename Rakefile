@@ -15,12 +15,12 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "capistrano-didi"
-  gem.homepage = "http://github.com/koenvw/didi"
+  gem.homepage = "https://github.com/Crosscheck/didi"
   gem.license = "MIT"
   gem.summary = %Q{didi - drupal deployment script based on capistrano}
   gem.description = %Q{didi is a collection of recipes for capistrano that allow drupal to be deployed, tested and used in a CI environment}
-  gem.email = "koenvw@gmail.com"
-  gem.authors = ["Koen Van Winckel"]
+  gem.email = "support@crosscheck.be"
+  gem.authors = ["CrossCheck"]
   #gem.add_dependency "capistrano", "~> 2.12"
   #gem.add_dependency "railsless-deploy", "~> 1.0.2"
   gem.post_install_message = '=> "didify" and "didi" commands installed. Try them out!'

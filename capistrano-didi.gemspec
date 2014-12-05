@@ -5,13 +5,13 @@
 
 Gem::Specification.new do |s|
   s.name = "capistrano-didi"
-  s.version = "0.4.10"
+  s.version = "0.4.11"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Koen Van Winckel"]
-  s.date = "2014-08-01"
+  s.authors = ["CrossCheck"]
+  s.date = "2014-11-28"
   s.description = "didi is a collection of recipes for capistrano that allow drupal to be deployed, tested and used in a CI environment"
-  s.email = "koenvw@gmail.com"
+  s.email = "support@crosscheck.be"
   s.executables = ["didi", "didify"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
     "test/helper.rb",
     "test/test_didi.rb"
   ]
-  s.homepage = "http://github.com/koenvw/didi"
+  s.homepage = "https://github.com/Crosscheck/didi"
   s.licenses = ["MIT"]
   s.post_install_message = "=> \"didify\" and \"didi\" commands installed. Try them out!"
   s.require_paths = ["lib"]
