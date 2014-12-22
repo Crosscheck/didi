@@ -53,6 +53,7 @@ set :profile, "PROJECT_NAME_kickstart"
 set :domain, "PROJECT_NAME"
 set :sitemail, "support@crosscheck.be"
 set :adminpass, "drupal_admin_pass"
+set :theme_path, "#{drupal_path}/sites/PROJECT_NAME/themes/custom/#{theme}"
 
 # Compile .sass files to .css
 before "deploy:create_symlink", "grunt"

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "capistrano-didi"
-  s.version = "0.4.12"
+  s.version = "0.4.13"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["CrossCheck"]
-  s.date = "2014-11-28"
+  s.date = "2014-12-22"
   s.description = "didi is a collection of recipes for capistrano that allow drupal to be deployed, tested and used in a CI environment"
   s.email = "support@crosscheck.be"
   s.executables = ["didi", "didify"]

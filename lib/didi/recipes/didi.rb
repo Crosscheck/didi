@@ -18,10 +18,6 @@ Capistrano::Configuration.instance.load do
   _cset(:adminpass) { abort "Please specify the Drupal admin password (:adminpass)." }
   _cset(:baseline) { abort "Please specify the Baseline feature (:baseline)." }
 
-  # Added by KimKennof.
-  _cset(:theme) { abort "Please specify the theme name (:theme)." }
-  _cset(:theme_path) { abort "Please specify the theme name (:theme_path)." }
-
 # =========================================================================
 # These variables may be set in the client capfile if their default values
 # are not sufficient.
@@ -50,6 +46,9 @@ Capistrano::Configuration.instance.load do
   set :copy_dir, File.expand_path("~/.capistrano/#{application}")
   set :copy_cache, "#{copy_dir}/#{stage}"
   set :assets_path, 'assets'
+
+  set :theme, ''
+  set :theme_path, ''
 
   ssh_options[:forward_agent] = true
   #ssh_options[:verbose] = :debug #FIXME

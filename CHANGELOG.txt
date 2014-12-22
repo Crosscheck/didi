@@ -1,3 +1,7 @@
+## 0.4.13 / 22 December 2014
+
+* PE-75: handle theme paths better
+
 ## 0.4.12 / 22 December 2014
 
 * PE-75: use local copy when cloning repositories
