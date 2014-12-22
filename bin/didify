@@ -99,7 +99,7 @@ set :db_username, "PROJECT_NAME"
 set :db_password, "database_password"
 set :db_prefix, ""
 ',
-"config/sql/staging.sql" => <<scrub
+"config/sql/scrub-database.sql" => <<scrub
 --
 -- Scrub important information from a Drupal database.
 --
