@@ -1,3 +1,9 @@
+## 0.4.12 / 22 December 2014
+
+* PE-75: use local copy when cloning repositories
+* PE-75: removed test files
+* PE-75: added dev and acc environments to didify
+
 ## 0.4.11 / 28 November 2014
 
 * added Grunt task support
