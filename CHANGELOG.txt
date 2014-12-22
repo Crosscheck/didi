@@ -1,3 +1,7 @@
+## 0.4.14 / 22 December 2014
+
+* PE-75: fixed missing application variable bug.
+
 ## 0.4.13 / 22 December 2014
 
 * PE-75: handle theme paths better
