@@ -27,7 +27,7 @@ Capistrano::Configuration.instance.load do
 # are not sufficient.
 # =========================================================================
   set :scm, :git
-  set :deploy_via, :remote_cache
+  set :deploy_via, :copy
   set :drupal_version, '7'
   set :keep_releases, 5
   set :use_sudo, false
