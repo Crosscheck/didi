@@ -41,12 +41,11 @@ Capistrano::Configuration.instance.load do
   set :make_file, ''
   set :use_private_files, false
 
-  set :stage, 'production'
   set :copy_exclude, ['.git']
-  set :copy_dir, File.expand_path("~/.capistrano/#{application}")
-  set :copy_cache, "#{copy_dir}/#{stage}"
+  # Lazy load variable on execution.
+  set(:copy_dir) { File.expand_path("~/.capistrano/#{application}") }
+  set(:copy_cache) { "#{copy_dir}/#{stage}" }
   set :assets_path, 'assets'
-
   set :theme, ''
   set :theme_path, ''
 
