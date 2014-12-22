@@ -44,30 +44,60 @@ files = {
   FILE
 
   "config/deploy.rb" => 'set :default_stage, "staging"
-set :stages, %w(staging production)
-set :application, "your_application_name"
-set :repository,  "your_repository_location_here"
-set :drupal_path, "drupal" # change this to your drupal folder
-',
-  "config/deploy/staging.rb" => 'set :user, "ssh_user_name"
-server "server.example.com", :app, :web, :db, :primary => true
-
-set :deploy_to, "the_path_on_the_remote_server"
-set :branch, "master"
-
-set :db_type, "mysql"
-set :db_name, "database_name"
-set :db_username, "database_user_name"
-set :db_password, "database_password"
-set :db_prefix, "database_prefix"
-
-set :profile, "minimal"
-set :domain, "default"
-set :site, "apache_vhost"
-set :sitemail, "drupal_site_email_address"
+set :stages, %w(dev acc staging prod)
+set :application, "PROJECT_NAME"
+set :repository,  "git@gitlab.crosscheck.be:crosscheck/PROJECT_NAME"
+set :drupal_path, "docroot"
+set :baseline, "PROJECT_NAME_core"
+set :profile, "PROJECT_NAME_kickstart"
+set :domain, "PROJECT_NAME"
+set :sitemail, "support@crosscheck.be"
 set :adminpass, "drupal_admin_pass"
 
-set :baseline, "drupal_feature_to_activate_after_fresh_install"
+# Compile .sass files to .css
+before "deploy:create_symlink", "grunt"
+
+# Re-enable the core module so dependencies are taken care of.
+before "drush:update", "drush:bl"
+
+# Clear cache before running any update commands (e.g. to update class registry
+# early).
+before "drush:update", "drush:cc"
+
+# Always trigger environment switch after deploy so the settings get updated.
+after "deploy", "drush:env_switch"
+
+# Development jobs, should not be executed after go-live.
+after "deploy", "drush:migrate"
+after "deploy", "drush:baseline_build"
+after "deploy", "drush:l10n_update"
+
+',
+"config/deploy/dev.rb" => 'set :user, "crosscheck"
+server "SITE_NAME.dev.one-agency.be", :app, :web, :db, :primary => true
+
+set :deploy_to, "/home/www/vhosts/projects/PROJECT_NAME/dev/http"
+set :branch, "master"
+set :site, "SITE_NAME.dev.one-agency.be"
+
+set :db_type, "mysql"
+set :db_name, "PROJECT_NAME_dev"
+set :db_username, "PROJECT_NAME"
+set :db_password, "database_password"
+set :db_prefix, ""
+',
+"config/deploy/acc.rb" => 'set :user, "crosscheck"
+server "SITE_NAME.acc.one-agency.be", :app, :web, :db, :primary => true
+
+set :deploy_to, "/home/www/vhosts/projects/PROJECT_NAME/acc/http"
+set :branch, "acc"
+set :site, "SITE_NAME.acc.one-agency.be"
+
+set :db_type, "mysql"
+set :db_name, "PROJECT_NAME_acc"
+set :db_username, "PROJECT_NAME"
+set :db_password, "database_password"
+set :db_prefix, ""
 ',
 "config/sql/staging.sql" => <<scrub
 --
