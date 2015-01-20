@@ -155,9 +155,11 @@ Capistrano::Configuration.instance.load do
 
       # Generate private files when enabled.
       if use_private_files
-        run <<-CMD
-        mkdir -p #{shared_private_files} && #{try_sudo} chown #{user}:#{srv_usr} #{shared_private_files.join(' ')} && #{try_sudo} chmod g+w #{shared_private_files.join(' ')}
-        CMD
+        shared_private_files.each_with_index do |sf, i|
+          run <<-CMD
+            mkdir -p #{shared_private_files[i]} && #{try_sudo} chown #{user}:#{srv_usr} #{shared_private_files[i].join(' ')} && #{try_sudo} chmod g+w #{shared_private_files[i].join(' ')}
+            CMD
+        end
       end
 
       #create drupal config file
@@ -187,7 +189,9 @@ Capistrano::Configuration.instance.load do
           run ["ln -nfs #{shared_files} #{previous_release_files}",
                "ln -nfs #{shared_settings} #{previous_release_settings}"].join("; ")
           if use_private_files
-            run "ln -nfs #{shared_private_files} #{previous_release_private_files}"
+            shared_private_files.each_with_index do |sf, i|
+              run "ln -nfs #{shared_private_files[i]} #{previous_release_private_files}"
+            end
           end
         else
           logger.important "no previous release to rollback to, rollback of drupal shared data skipped."

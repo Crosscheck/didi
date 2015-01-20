@@ -1,3 +1,7 @@
+## 0.4.15 / 20 January 2015
+
+* Issue #8: Fixed the shared_private_files bug
+
 ## 0.4.14 / 22 December 2014
 
 * PE-75: fixed missing application variable bug.
