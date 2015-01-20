@@ -157,7 +157,7 @@ Capistrano::Configuration.instance.load do
       if use_private_files
         shared_private_files.each_with_index do |sf, i|
           run <<-CMD
-            mkdir -p #{shared_private_files[i]} && #{try_sudo} chown #{user}:#{srv_usr} #{shared_private_files[i].join(' ')} && #{try_sudo} chmod g+w #{shared_private_files[i].join(' ')}
+            mkdir -p #{shared_private_files[i]} && #{try_sudo} chown #{user}:#{srv_usr} #{shared_private_files[i]} && #{try_sudo} chmod g+w #{shared_private_files[i]}
             CMD
         end
       end
