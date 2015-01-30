@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "capistrano-didi"
-  s.version = "0.4.15"
+  s.version = "0.4.16"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["CrossCheck"]
-  s.date = "2015-01-20"
+  s.date = "2015-01-30"
   s.description = "didi is a collection of recipes for capistrano that allow drupal to be deployed, tested and used in a CI environment"
   s.email = "support.team@one-agency.be"
   s.executables = ["didi", "didify"]
@@ -44,24 +44,24 @@ Gem::Specification.new do |s|
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<railsless-deploy>, [">= 1.0"])
-      s.add_development_dependency(%q<capistrano>, [">= 2.12"])
-      s.add_development_dependency(%q<shoulda>, [">= 3.0"])
-      s.add_development_dependency(%q<bundler>, [">= 1"])
-      s.add_development_dependency(%q<jeweler>, [">= 1.6"])
+      s.add_development_dependency(%q<railsless-deploy>, ["~> 1.0"])
+      s.add_development_dependency(%q<capistrano>, ["~> 2.12"])
+      s.add_development_dependency(%q<shoulda>, ["~> 3.0"])
+      s.add_development_dependency(%q<bundler>, ["~> 1"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.6"])
     else
-      s.add_dependency(%q<railsless-deploy>, [">= 1.0"])
-      s.add_dependency(%q<capistrano>, [">= 2.12"])
-      s.add_dependency(%q<shoulda>, [">= 3.0"])
-      s.add_dependency(%q<bundler>, [">= 1"])
-      s.add_dependency(%q<jeweler>, [">= 1.6"])
+      s.add_dependency(%q<railsless-deploy>, ["~> 1.0"])
+      s.add_dependency(%q<capistrano>, ["~> 2.12"])
+      s.add_dependency(%q<shoulda>, ["~> 3.0"])
+      s.add_dependency(%q<bundler>, ["~> 1"])
+      s.add_dependency(%q<jeweler>, ["~> 1.6"])
     end
   else
-    s.add_dependency(%q<railsless-deploy>, [">= 1.0"])
-    s.add_dependency(%q<capistrano>, [">= 2.12"])
-    s.add_dependency(%q<shoulda>, [">= 3.0"])
-    s.add_dependency(%q<bundler>, [">= 1"])
-    s.add_dependency(%q<jeweler>, [">= 1.6"])
+    s.add_dependency(%q<railsless-deploy>, ["~> 1.0"])
+    s.add_dependency(%q<capistrano>, ["~> 2.12"])
+    s.add_dependency(%q<shoulda>, ["~> 3.0"])
+    s.add_dependency(%q<bundler>, ["~> 1"])
+    s.add_dependency(%q<jeweler>, ["~> 1.6"])
   end
 end
 

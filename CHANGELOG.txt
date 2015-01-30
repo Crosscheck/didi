@@ -1,3 +1,7 @@
+## 0.4.16 / 30 January 2015
+
+* Fixed dependencies in Gemfile
+
 ## 0.4.15 / 20 January 2015
 
 * Issue #8: Fixed the shared_private_files bug
