@@ -471,7 +471,7 @@ Capistrano::Configuration.instance.load do
     task :default do
       current_host = capture("echo $CAPISTRANO:HOST$").strip
       run_locally "cd #{copy_cache}/#{theme_path} && bundle exec grunt"
-      run_locally "rsync -av #{copy_cache}/#{theme_path}/#{assets_path}/ #{user}@#{current_host}:#{current_path}/#{theme_path}/#{assets_path}/;"
+      run_locally "rsync -av #{copy_cache}/#{theme_path}/#{assets_path}/ #{user}@#{current_host}:#{current_release}/#{theme_path}/#{assets_path}/;"
     end
   end
 
